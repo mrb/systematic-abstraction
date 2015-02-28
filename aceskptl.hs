@@ -1,5 +1,6 @@
-
  -- ACESKpTL: A k-CFA-like abstract machine
+
+{-# LANGUAGE TypeOperators, TypeSynonymInstances #-}
 
 import Prelude hiding ((!!))
 
@@ -19,7 +20,6 @@ class Lattice a where
  (⊑) :: a -> a -> Bool
  (⊔) :: a -> a -> a
  (⊓) :: a -> a -> a
-
 
 instance (Ord s, Eq s) => Lattice (ℙ s) where
  bot = Data.Set.empty
@@ -41,22 +41,19 @@ f ⨆ [(k,v)] = Data.Map.insertWith (⊔) k v f
 (!!) :: (Ord k, Lattice v) => (k :-> v) -> k -> v
 f !! k = Data.Map.findWithDefault bot k f
 
-
 k = 1
-
 
 type Σ = (Exp,Env,Store,Kont,Time)
 data Storable = Clo(Lambda, Env) | Cont Kont
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 type Env = Var :-> Addr
 type Store = Addr :-> ℙ(Storable)
 data Kont = Mt | Ar(Exp,Env,Addr) | Fn(Lambda,Env,Addr)
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 type Time = [Exp]
 data Addr = KAddr (Exp, Time)
           | BAddr (Var, Time)
- deriving (Eq,Ord)
-
+ deriving (Eq,Ord,Show)
 
 inject :: Exp -> Σ
 inject (e) = (e, ρ0, σ0, κ0, t0)
@@ -64,7 +61,6 @@ inject (e) = (e, ρ0, σ0, κ0, t0)
        σ0 = Data.Map.empty 
        κ0 = Mt
        t0 = []
-
 
 step :: Σ -> [Σ]
 step ς@(Ref x, ρ, σ, κ, t) = [ (Lam lam, ρ', σ, κ, t') 
@@ -87,7 +83,6 @@ step ς@(Lam lam, ρ, σ, Fn(x :=> e, ρ', a), t)
  where t' = tick(ς) 
        a' = allocBind(x, t') 
   
-
 allocBind :: (Var,Time) -> Addr
 allocBind (v,t) = BAddr (v,t)
 
@@ -96,8 +91,6 @@ allocKont (e,t) = KAddr (e,t)
 
 tick :: Σ -> Time
 tick (e,_,_,_,t) = take k (e : t)
-
-
 
 explore :: (Ord a) => (a -> [a]) -> a -> ℙ(a)
 explore f ς0 = search f Data.Set.empty [ς0]
@@ -114,9 +107,7 @@ search f seen (hd:tl)
 aval :: Exp -> ℙ(Σ)
 aval(e) = explore step (inject(e))
 
-
-
-
 main :: IO ()
 main = do 
+  print (aval (Lam ("x" :=> Ref "x")))
   return ()

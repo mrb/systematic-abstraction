@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeOperators, TypeSynonymInstances #-}
 
  -- CESKpT2: A time-stamped CESK* machine in which
  --          continuations contain pointers
@@ -70,7 +71,7 @@ allocKont (e,t) = KAddr (e,t)
 tick :: Σ -> Time
 tick (e,_,_,_,t) = e : t
 
-
 main :: IO ()
 main = do 
+  print (evaluate ((Lam ("x" :=> Ref "x")) :@ (Lam ("z" :=> Ref "z"))) :@ (Lam ("a" :=> Ref "a")))
   return ()

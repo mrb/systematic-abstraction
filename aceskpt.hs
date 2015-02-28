@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeOperators, TypeSynonymInstances #-}
 
  -- ACESKpTL: A k-CFA-like abstract machine
 
@@ -45,11 +46,11 @@ f !! k = Data.Map.findWithDefault bot k f
 
 type Σ = (Exp,Env,Store,Kont,Time)
 data Storable = Clo(Lambda, Env) | Cont Kont
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 type Env = Var :-> Addr
 type Store = Addr :-> ℙ(Storable)
 data Kont = Mt | Ar(Exp,Env,Addr) | Fn(Lambda,Env,Addr)
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 type Time = Int
 type Addr = Int
 

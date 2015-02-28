@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeOperators, TypeSynonymInstances #-}
 
  -- ACESKpTL: A k-CFA-like abstract machine
 
@@ -45,12 +46,12 @@ f !! k = Data.Map.findWithDefault bot k f
 
 type Σ = (Exp,Store,Kont)
 data Storable = Clo Lambda | Cont Kont
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 type Store = Addr :-> ℙ(Storable)
 data Kont = Mt | Ar(Exp,Addr) | Fn(Lambda,Addr)
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 data Addr = KAddr Exp | BAddr Var
- deriving (Eq,Ord)
+ deriving (Eq,Ord,Show)
 
 
 inject :: Exp -> Σ
@@ -96,4 +97,5 @@ aval(e) = explore step (inject(e))
 
 main :: IO ()
 main = do 
+  print (aval $! (Lam ("x" :=> Ref "x")))
   return ()

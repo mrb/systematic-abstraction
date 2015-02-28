@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeOperators, TypeSynonymInstances #-}
 
  -- CESKpt: A time-stamped CESK* machine in which
  --         continuations contain pointers
